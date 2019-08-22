@@ -1,0 +1,35 @@
+v0.0.1
+Initial release.
+
+
+v0.0.2
+1. Added bot registration/deletion and bot domain registration function.
+
+2. The following functions have been added to the message sending function of the Talk Bot API.
+- Image
+- Link
+- Sticker
+- Button template
+
+3. Action Objects and Quick Reply have also been added.
+
+Other bug fixes.
+
+
+v0.0.3
+The following features have been added to the TalkBotApi class:
+
+- Talk Bot Fix
+- Talk Bot List Inquiry
+- Displaying Talk Bot Details
+- Fix talk bot domain publishing settings
+- Talk Bot Domain Removal
+- Bot Talk Room Member List Inquiry
+- Leaving the Bot
+- Send a message (list template)
+
+
+v0.0.4
+v0.0.4.1
+ModuleNotFoundError: No module named 'Crypto'
+to solve the problem, we added the 3.4.3 to the requires.
