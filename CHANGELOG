@@ -29,7 +29,5 @@ The following features have been added to the TalkBotApi class:
 - Send a message (list template)
 
 
-v0.0.4
-v0.0.4.1
-ModuleNotFoundError: No module named 'Crypto'
-to solve the problem, we added the 3.4.3 to the requires.
+v0.0.5
+Added pycryptodome to needs to solve " ModuleNotFoundError: No module named 'Crypto' ".
