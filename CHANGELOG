@@ -38,3 +38,7 @@ v0.0.6
 - To make it more available, we have not specified a account_id or room_id when generating talk Bot instances.
 - Improved readability of the code.
 - Other bug fixes.
+
+
+v0.0.7 - v0.0.11
+Bug fix.

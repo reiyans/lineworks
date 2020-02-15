@@ -14,14 +14,12 @@ import datetime
 from datetime import datetime, timedelta
 import json
 import logging
-from logging.config import fileConfig
 
 import jwt
 import requests
 
 
-fileConfig(r".\logging.ini")
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class ServerApi(object):

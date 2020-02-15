@@ -8,12 +8,10 @@ For more information, please refer to the official documentation.
 URL:https://developers.worksmobile.com/jp/document/3005001?lang-ja
 """
 import logging
-from logging.config import fileConfig
 
 from .server_api import ServerApi
 
 
-fileConfig(r".\logging.ini")
 logger = logging.getLogger()
 
 

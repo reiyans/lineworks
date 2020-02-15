@@ -5,10 +5,9 @@ chardet==3.0.4
 cryptography==2.8
 docutils==0.15.2
 idna==2.8
-lineworks==0.0.5
+lineworks==0.0.10
 pkginfo==1.5.0.1
 pycparser==2.19
-pycryptodome==3.8.2
 Pygments==2.4.2
 PyJWT==1.7.1
 readme-renderer==24.0
