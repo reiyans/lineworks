@@ -31,3 +31,10 @@ The following features have been added to the TalkBotApi class:
 
 v0.0.5
 Added pycryptodome to needs to solve " ModuleNotFoundError: No module named 'Crypto' ".
+
+
+v0.0.6
+- JWT generation/electronic signature simplified by pyJWT.
+- To make it more available, we have not specified a account_id or room_id when generating talk Bot instances.
+- Improved readability of the code.
+- Other bug fixes.

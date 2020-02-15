@@ -7,7 +7,6 @@ class Action(object):
     See the official documentation for more information.
     URL: https://developers.worksmobile.com/document/1005050
     '''
-
     def postback_action(self, label, data, display_text):
         postback_action = {
             "type": "postback",

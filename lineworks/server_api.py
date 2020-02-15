@@ -1,161 +1,147 @@
-#  cording:utf-8
+#  cording: utf-8
+"""Preparing for API authentication and calling the server API
 
-import base64
+Issue an access token using the server ID issued in the Developer Console and call the server API.
+For more information, please refer to the official documentation.
+
+Preparing for API authentication
+URL:https://developers.worksmobile.com/jp/document/1002002?lang-ja
+
+Calling the API
+URL:https://developers.worksmobile.com/jp/document/3002003?lang-ja
+"""
 import datetime
+from datetime import datetime, timedelta
 import json
+import logging
+from logging.config import fileConfig
 
+import jwt
 import requests
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_v1_5
+
+
+fileConfig(r".\logging.ini")
+logger = logging.getLogger()
 
 
 class ServerApi(object):
-    """ This is the base class of API that use server APIs( e.g. talk bot API).
+    """This is the base class of API that use server APIs( e.g. Talk Bot API).
 
     The LINE WORKS Bot Platform API is divided into two types: the Service API and the Server API.
     Server API is an API that does not require a user to log in.
     You can access all user data in the domain.
 
     Attributes:
-        API_ID: API ID of your domain issued by LINE WORKS Developer Console.
-        SERVER_API_CONSUMER_KEY: The consumer key of the server API issued by the LINE WORKS Developer Console.
-        SERVER_ID: Id of the server you added in the Server List (IDENTITY registration type).
-        PRIVATE_KEY: When you issue a server ID in the Server List (identity registration type), the authentication key is issued for each server.
+        api_id: API ID of your domain issued by LINE WORKS Developer Console.
+        server_api_consumer_key: The consumer key of the server API issued by the LINE WORKS Developer Console.
+        server_id: Id of the server you added in the Server List (IDENTITY registration type).
+        private_key: When you issue a server ID in the Server List (identity registration type), the authentication key
+                    is issued for each server.
+        domain_id: Your domain id.
     """
+    def __init__(self, api_id, server_api_consumer_key, server_id, private_key, domain_id):
+        """Constructor"""
+        self.api_id = api_id
+        self.server_api_consumer_key = server_api_consumer_key
+        self.server_id = server_id
+        self.private_key = private_key
+        self.domain_id = domain_id
 
-    def __init__(self, api_id, private_key, server_api_consumer_key, server_id):
-        ''' Constructor '''
-        self.API_ID = api_id
-        self.PRIVATE_KEY = private_key
-        self.SERVER_API_CONSUMER_KEY = server_api_consumer_key
-        self.SERVER_ID = server_id
+    def get_access_token(self):
+        """Gets an access token to call the server API. (Identity Registration Type)
 
-    def jwt_generate(self):
-        ''' JWT Generation and JWT Electronic Signature - RFC-7515
+        An authentication format that issues tokens using the server ID issued in the Developer Console.
+        Issue Token by calling "two-legged OAuth 2.0 API" using JWT (JSON Web Token RFC-7519).
+        For more information, see the official documentation.
+        URL:https://developers.worksmobile.com/jp/document/1002002?lang-ja
 
-        The Server Token in the identity registration expression passes the server ID issued by the Developer Console as a parameter.
-        Issue token by calling "two-legged OAuth 2.0 API" using JWT (JSON Web Token RFC-7519).
-        This method generates the JWT required to issue the Token.
+        Returns:
+            str: The access token.
 
-        :return(str): JWT
-        '''
-
-        def dict_to_base64encode(dict_str):
-            ''' Converts a dictionary string to a Base64 encoded string.
-
-            After converting the dictionary string to JSON format, it encodes it to UTF-8.
-            Base64 encodes it and decodes it to UTF-8.
-
-            :param dict_str(dict): A dictionary string.
-
-            :return(str): Base64 encoded string (UTF-8).
-            '''
-            json_str = json.dumps(dict_str)
-            base64encode = base64.urlsafe_b64encode(json_str.encode('utf-8')).decode('utf-8')
-            return base64encode
-
-        def rsa_encrypt(plain_text, PRIVATE_KEY):
-            ''' Encrypts a plain text and returns an electronic signature.
-
-            Electronic signatures comply with the JWS (JSON Web Signature RFC-7515) convention.
-            The byte array of the JWT header and body generated earlier is encrypted with the RSA SHA-256
-            algorithm (RS256 specified by header) using the authentication key downloaded by the Developer Console.
-
-            :param plain_text(str): The text that connects header and body with periods.
-            :param PRIVATE_KEY(str): The authentication key downloaded from the Developer Console.
-
-            :return(str): Electronic signature.
-            '''
-            key = RSA.importKey(PRIVATE_KEY)
-            byte_array = plain_text.encode('utf-8')
-            digest = SHA256.new(byte_array)
-            pkcs = PKCS1_v1_5.new(key)
-            signature = pkcs.sign(digest)
-            return signature
-
-        dict_header = {
-            "alg": "RS256",
-            "typ": "JWT"
+        Raises:
+            If the access token cannot be obtained, there is no parameter "access_token" in the HTTP response,
+            so it will be KeyError.
+            In that case, an HTTP response is returned so that the error message can be checked.
+        """
+        # JWT generation/electronic signature
+        iat = int(datetime.now().timestamp())
+        exp = int((datetime.now() + timedelta(minutes=30)).timestamp())
+        json_claim_set = {
+            "iss": self.server_id,
+            "iat": iat,
+            "exp": exp
         }
-        base64_header = dict_to_base64encode(dict_str=dict_header)
-        dict_claim_set = {
-            "iss": self.SERVER_ID,
+        json_header = {"alg": "RS256", "typ": "JWT"}
+        lw_jwt = jwt.encode(json_claim_set, self.private_key, algorithm="RS256", headers=json_header)
 
-            # JWT generation date and time. Unix time specified (sec)
-            "iat": int(datetime.datetime.now().timestamp()),
-
-            # JWT expiration date and time. Unix time specified (sec)
-            "exp": int((datetime.datetime.now() + datetime.timedelta(minutes=30)).timestamp())
-        }
-        base64_claim_set = dict_to_base64encode(dict_str=dict_claim_set)
-        plain_text = base64_header + "." + base64_claim_set
-        signature = rsa_encrypt(plain_text=plain_text, PRIVATE_KEY=self.PRIVATE_KEY)
-        base64_signature = base64.urlsafe_b64encode(signature).decode('utf-8')
-        jwt = plain_text + "." + base64_signature
-        return jwt
-
-    def server_token_request(self):
-        ''' Token Request to LINE WORKS Authentication Server - RFC-7523
-
-        Request URL: https://auth.worksmobile.com/b/{API ID}/server/token
-
-        HTTP Method:
-            POST
-            content-type : application/x-www-form-urlencoded; charset=UTF-8
-
-        Request: Post the following items:
-            parameter | type | required | description
-            --------------------------------------------------
-            grant_type | String | Y | The URL-encoded String value(urn:ietf:params:oauth:grant-type:jwt-bearer).
-            assertion | String | Y | JWT
-
-        :return(str): Access Token.
-        '''
-        jwt = self.jwt_generate()
-        request_url = "https://auth.worksmobile.com/b/{}/server/token".format(self.API_ID)
-        header = {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        }
+        # Token Request to LINE WORKS Authentication Server
+        url = f"https://auth.worksmobile.com/b/{self.api_id}/server/token"
+        header = {"Content-Type": "application/json; charset=UTF-8"}
         payload = {
-            "grant_type": "urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer",
-            "assertion": jwt
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "assertion": lw_jwt
         }
+        logger.info({
+            "action": "access token request",
+            "status": "run",
+            "message": "request start."
+        })
+        response = requests.post(url, headers=header, params=payload)
         try:
-            response = requests.post(url=request_url, headers=header, params=payload)
-            server_token = json.loads(response.text)["access_token"]
-            return server_token
-        except:
-            error_code = json.loads(response.text)["code"]
-            error_message = json.loads(response.text)["message"]
-            return error_code + error_message
+            access_token = json.loads(response.text)["access_token"]
+            logger.info({
+                "action": "access token request",
+                "status": "success",
+                "message": "access_token=" + access_token
+            })
+            return access_token
+        except TypeError:
+            logger.info({
+                "action": "access token request",
+                "status": "fail",
+                "message": response.text
+            })
+            return response
 
-    def use_server_api(self, request_url, payload, method="POST"):
-        ''' Method for using the issued server token.
+    def call_server_api(self, url, payload, method="POST"):
+        """Method for using the issued server token.
 
-        :param request_url: Request URL for each API.
-        :param payload: The payload of each API.
-        :param method: The method at the time of request. The default is POST.
+        Args:
+            url(str): Request URL for each API.
+            payload(dict): The payload of each API.
+            method(str): Request method. (the default is the POST method.)
 
-        :return: Http Response text..
-        '''
-        SERVER_TOKEN = self.server_token_request()
+        Returns:
+            Http Response.
+        """
+        access_token = self.get_access_token()
+        logging.debug(f"access_token={access_token}")
+        logging.debug(f"payload={payload}")
         header = {
             "Content-Type": "application/json; charset=UTF-8",
-            "consumerKey": self.SERVER_API_CONSUMER_KEY,
-            "Authorization": "Bearer " + SERVER_TOKEN,
+            "consumerKey": self.server_api_consumer_key,
+            "Authorization": "Bearer " + access_token
         }
-        if method == "GET":
-            response = requests.get(url=request_url, headers=header, data=json.dumps(payload))
-            return response.text
-        elif method == "POST":
-            response = requests.post(url=request_url, headers=header, data=json.dumps(payload))
-            return response.text
-        elif method == "PUT":
-            response = requests.put(url=request_url, headers=header, data=json.dumps(payload))
-            return response.text
-        elif method == "DELETE":
-            response = requests.delete(url=request_url, headers=header, data=json.dumps(payload))
-            return response.text
-        else:
-            pass
+        logger.debug(f"header={header}")
+        logger.info({
+            "action": "call server api",
+            "status": "run",
+            "message": "start a call."
+        })
+        try:
+            # Be careful because it will be an error if you set the keyword argument to "params" instead of "data".
+            response = requests.request(method, url, headers=header, data=json.dumps(payload))
+            message = f"status_code:{response.status_code}  text:{response.text}"
+            logger.info({
+                "action": "call server api",
+                "status": "success",
+                "message": message
+            })
+        except:
+            logger.info({
+                "action": "call server api",
+                "status": "fail",
+                "message": response.text
+            })
+        finally:
+            return response

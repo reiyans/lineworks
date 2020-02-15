@@ -1,3 +1,8 @@
-dist/*
-lineworks.egg-info/*
-build/*
+__pycache__/
+
+build/
+dist/
+lineworks.egg-info/
+
+pyvenv.cfg
+test.py
