@@ -1,4 +1,4 @@
-#`lineworks` -LINE WORKS APIを呼び出すPythonライブラリ 
+# `lineworks` -LINE WORKS APIを呼び出すPythonライブラリ 
 著者： 鈴木　麗<br>
 ソースコード： https://github.com/0yan/lineworks<br>
 生成： 2020年2月16日<br>
@@ -6,12 +6,12 @@
 バージョン：0.1.0
 
 
-#はじめに
+# はじめに
 **lineworks**は、ビジネスチャット[LINE WORKS](https://line.worksmobile.com/jp/)のAPIを呼び出すためのPythonライブラリです。
 本プロジェクトは、トークBotを使ったアプリケーション作成の効率化のために開始しました。<br>
 
 
-#サポート
+# サポート
 本プロジェクトは、ボランティアが余暇の時間に開発・管理しているオープンソースプロジェクトです。
 2020年2月16日現在、サーバーAPIの呼び出しとトークBot APIにしか対応しておりません。
 その他のAPIについては、LINE WORKS Developersの公式ドキュメントをご覧ください。<br>
@@ -19,7 +19,7 @@
 - [LINE WORKS Official Documentation](https://developers.worksmobile.com/document)
 
 
-#貢献
+# 貢献
 もし、本プロジェクトの開発と保守を支援してくださる方がいれば大歓迎です。
 貢献頂く際は、以下の手順でお願い致します。
 
@@ -27,11 +27,11 @@
 2. 単体テストの追加をお願い致します。
 
 
-#インストール
+# インストール
 pipを使用してlineworksをインストールします。<br>
 `pip install lineworks`
 
-###依存関係
+### 依存関係
 [cryptography](https://pypi.org/project/cryptography/)、[PyJWT](https://pypi.org/project/PyJWT/)及び[requests](https://pypi.org/project/requests/)に依存しています。<br>
 サーバーAPIを呼び出す際にはアクセストークンが必要です。
 アクセストークンを取得する際にはJWTを生成/電子署名を行いますが、そのJWT生成/電子署名にPyJWTを使用します。<br>
@@ -40,11 +40,11 @@ cryptographyは、PyJWTが電子署名アルゴリズムRS256を使用するの�
 言うまでもないと思いますが、requestsはAPIの呼び出しに使用します。
 
 
-#クイックスタート
+# クイックスタート
 本ライブラリの使用例をご紹介致します。<br>
 なお、本ライブラリの使用にはLINE WORKS API情報が必要です。使用前に、[LINE WORKS Developer Console](https://developers.worksmobile.com/jp/console/openapi/main)で発行してください。<br>
 
-##`TalkBotApi`クラスのインスタンスを生成する
+## `TalkBotApi`クラスのインスタンスを生成する
 `TalkBotApi`クラスは、アクセストークン取得メソッド`get_access_token()`とサーバーAPI呼び出しメソッド`call_server_api()`を持つ`ServerApi`クラスの子クラスです。
 トークBot APIを呼び出すために、`TalkBotApi`クラスのインスタンスを生成します。<br>
 なお、Developer Consoleで登録したBotを利用する場合、キーワード引数`bot_no`に当該BotのBot No.を渡します。
@@ -60,16 +60,16 @@ cryptographyは、PyJWTが電子署名アルゴリズムRS256を使用するの�
 >>> talk_bot = TalkBotApi(api_id, server_api_consumer_key, server_id, private_key, domain_id, "your bot no.(option)")
 ```
 
-###補足
+### 補足
 ソースコードをサーバーにデプロイする場合、API情報をソースコードに含めることはセキュリティの観点からもお勧めできません。
 .envファイルを作成して同ファイルにアクセスする、環境変数に登録して`os.environ.get()`でアクセスするなどの対策をしてください。
 
-##`TalkBotApi`クラスのメソッドを使用する
+## `TalkBotApi`クラスのメソッドを使用する
 `TalkBotApi`クラスのメソッドは、①登録済みBotを使用するものと②それ以外に大別されます。
 前者を使用する場合は必ず、`TalkBotApi`クラスのインスタンス生成時、キーワード引数`bot_no`に使用するBotのBot No.を渡してください。<br>
 使用方法は以下のとおりです（使用方法の詳細は各メソッドのdocstringをご覧ください）。
 
-###①登録済みのBotを使用するもの
+### ①登録済みのBotを使用するもの
 ```python
 from lineworks import TalkBotApi
 
@@ -114,7 +114,7 @@ talk_bot.bot_leaving_room(room_id="12345")
 talk_bot.send_text_message(send_text="こんにちは", account_id="test1@example.com")
 ```
 
-###②それ以外
+### ②それ以外
 ```python
 from lineworks import TalkBotApi
 
