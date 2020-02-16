@@ -17,7 +17,7 @@ logger = logging.getLogger()
 
 class TalkBotApi(ServerApi):
     """Talk Bot API class."""
-    def __init__(self, api_id, server_api_consumer_key, server_id, private_key, domain_id, bot_no):
+    def __init__(self, api_id, server_api_consumer_key, server_id, private_key, domain_id, bot_no=None):
         """Constructor"""
         super().__init__(api_id, server_api_consumer_key, server_id, private_key, domain_id)
         self.bot_no = bot_no

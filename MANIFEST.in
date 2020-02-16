@@ -1,3 +1,2 @@
 include CHANGELOG
 include README.md
-include lineworks/logging.txt

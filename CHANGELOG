@@ -40,5 +40,10 @@ v0.0.6
 - Other bug fixes.
 
 
-v0.0.7 - v0.0.11
+v0.0.7 - v0.0.12
 Bug fix.
+
+
+v0.1.0
+- Japaneseization of README.
+- The default for keyword arguments bot_no in the constructor of the TalkBotApi class has been set to None.

@@ -4,4 +4,4 @@ build/
 dist/
 lineworks.egg-info/
 
-pyvenv.cfg
+test.py
