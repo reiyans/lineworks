@@ -75,7 +75,7 @@ class ServerApi(object):
         # Token Request to LINE WORKS Authentication Server
         url = f"https://auth.worksmobile.com/b/{self.api_id}/server/token"
         header = {"Content-Type": "application/json; charset=UTF-8"}
-        payload = {
+        params = {
             "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
             "assertion": lw_jwt
         }
@@ -84,7 +84,7 @@ class ServerApi(object):
             "status": "run",
             "message": "request start."
         })
-        response = requests.post(url, headers=header, params=payload)
+        response = requests.post(url, headers=header, params=params)
         try:
             access_token = json.loads(response.text)["access_token"]
             logger.info({
@@ -101,12 +101,12 @@ class ServerApi(object):
             })
             return response
 
-    def call_server_api(self, url, payload, method="POST"):
+    def call_server_api(self, url, params, method="POST"):
         """Method for using the issued server token.
 
         Args:
             url(str): Request URL for each API.
-            payload(dict): The payload of each API.
+            params(dict): The params of each API.
             method(str): Request method. (the default is the POST method.)
 
         Returns:
@@ -114,7 +114,7 @@ class ServerApi(object):
         """
         access_token = self.get_access_token()
         logging.debug(f"access_token={access_token}")
-        logging.debug(f"payload={payload}")
+        logging.debug(f"params={params}")
         header = {
             "Content-Type": "application/json; charset=UTF-8",
             "consumerKey": self.server_api_consumer_key,
@@ -128,7 +128,7 @@ class ServerApi(object):
         })
         try:
             # Be careful because it will be an error if you set the keyword argument to "params" instead of "data".
-            response = requests.request(method, url, headers=header, data=json.dumps(payload))
+            response = requests.request(method, url, headers=header, data=json.dumps(params))
             message = f"status_code:{response.status_code}  text:{response.text}"
             logger.info({
                 "action": "call server api",

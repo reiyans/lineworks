@@ -53,7 +53,7 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot"
-        payload = {
+        params = {
             "name": name,
             "photoUrl": photo_url,
             "description": description,
@@ -66,7 +66,7 @@ class TalkBotApi(ServerApi):
             "callbackUrl": callback_url,
             "callbackEvents": callback_events,
         }
-        response = self.call_server_api(url, payload)
+        response = self.call_server_api(url, params)
         return response
 
     def bot_fix(self, name, photo_url, description, managers, sub_managers=None, use_group_join=None,
@@ -99,7 +99,7 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}"
-        payload = {
+        params = {
             "name": name,
             "photoUrl": photo_url,
             "description": description,
@@ -112,7 +112,7 @@ class TalkBotApi(ServerApi):
             "callbackUrl": callback_url,
             "callbackEvents": callback_events,
         }
-        response = self.call_server_api(url, payload, "PUT")
+        response = self.call_server_api(url, params, "PUT")
         return response
 
     def remove_bot(self):
@@ -122,8 +122,8 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}"
-        payload = {"botNo": self.bot_no}
-        response = self.call_server_api(url, payload, "DELETE")
+        params = {"botNo": self.bot_no}
+        response = self.call_server_api(url, params, "DELETE")
         return response
 
     def query_bot_list(self):
@@ -133,7 +133,7 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot"
-        response = self.call_server_api(url, payload=None, method="GET")
+        response = self.call_server_api(url, params=None, method="GET")
         return response
 
     def query_bot_info(self):
@@ -143,8 +143,8 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}"
-        payload = {'botNo': self.bot_no}
-        response = self.call_server_api(url, payload, "GET")
+        params = {'botNo': self.bot_no}
+        response = self.call_server_api(url, params, "GET")
         return response
 
     def bot_domain_registration(self, use_public=False, use_permission=False, account_ids=None):
@@ -163,12 +163,12 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}/domain/{self.domain_id}"
-        payload = {
+        params = {
             "usePublic": use_public,
             "usePermission": use_permission,
             "accountIds": account_ids,
         }
-        response = self.call_server_api(url, payload)
+        response = self.call_server_api(url, params)
         return response
 
     def bot_domain_fix(self, use_public=False, use_permission=False, account_ids=None):
@@ -187,12 +187,12 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}/domain/{self.domain_id}"
-        payload = {
+        params = {
             "usePublic": use_public,
             "usePermission": use_permission,
             "accountIds": account_ids,
         }
-        response = self.call_server_api(url, payload, "PUT")
+        response = self.call_server_api(url, params, "PUT")
         return response
 
     def bot_domain_delete(self):
@@ -202,11 +202,11 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}/domain/{self.domain_id}"
-        payload = {
+        params = {
             "botNo": self.bot_no,
             "domainId": self.domain_id
         }
-        response = self.call_server_api(url, payload, "DELETE")
+        response = self.call_server_api(url, params, "DELETE")
         return response
 
     def create_room(self, account_ids, title):
@@ -224,11 +224,11 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}/room"
-        payload = {
+        params = {
             "accountIds": account_ids,
             "title": title
         }
-        response = self.call_server_api(url, payload)
+        response = self.call_server_api(url, params)
         return response
 
     def query_room_member_list(self, room_id):
@@ -240,11 +240,11 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}/room/{room_id}/accounts"
-        payload = {
+        params = {
             "botNo": self.bot_no,
             "roomId": str(room_id)
         }
-        response = self.call_server_api(url, payload, "GET")
+        response = self.call_server_api(url, params, "GET")
         return response
 
     def bot_leaving_room(self, room_id):
@@ -257,11 +257,11 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}/room/{room_id}/leave"
-        payload = {
+        params = {
             "botNo": self.bot_no,
             "roomId": str(room_id)
         }
-        response = self.call_server_api(url, payload)
+        response = self.call_server_api(url, params)
         return response
 
     def send_message(self, content, account_id=None, room_id=None, quick_reply_items=None):
@@ -279,19 +279,19 @@ class TalkBotApi(ServerApi):
             Http response.
         """
         url = f"https://apis.worksmobile.com/r/{self.api_id}/message/v1/bot/{self.bot_no}/message/push"
-        payload = {"botNo": str(self.bot_no)}
+        params = {"botNo": str(self.bot_no)}
 
         # accountId and roomId specify one or the other.
         if account_id is not None:
-            payload.update({"accountId": str(account_id)})
+            params.update({"accountId": str(account_id)})
         elif room_id is not None:
-            payload.update({"roomId": str(room_id)})
+            params.update({"roomId": str(room_id)})
         else:
             print("Please specify either account_id or room_id.")
-        payload.update(content)
+        params.update(content)
         if quick_reply_items is not None:
-            payload["content"].update({"quickReply": {"items": quick_reply_items}})
-        response = self.call_server_api(url, payload)
+            params["content"].update({"quickReply": {"items": quick_reply_items}})
+        response = self.call_server_api(url, params)
         return response
 
     def send_text_message(self, send_text, account_id=None, room_id=None, quick_reply_items=None):
