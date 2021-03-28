@@ -1,52 +1,28 @@
-# `lineworks` -LINE WORKS APIを呼び出すPythonライブラリ 
-著者： 鈴木　麗<br>
-ソースコード： https://github.com/0yan/lineworks<br>
-生成： 2020年2月16日<br>
-ライセンス：MIT License (MIT)<br>
-バージョン：0.1.0
-
-
-# はじめに
+# `lineworks` -LINE WORKS APIを呼び出すPythonライブラリ
 **lineworks**は、ビジネスチャット[LINE WORKS](https://line.worksmobile.com/jp/)のAPIを呼び出すためのPythonライブラリです。
-本プロジェクトは、トークBotを使ったアプリケーション作成の効率化のために開始しました。<br>
-
-
-# サポート
-本プロジェクトは、ボランティアが余暇の時間に開発・管理しているオープンソースプロジェクトです。
-2020年2月16日現在、サーバーAPIの呼び出しとトークBot APIにしか対応しておりません。
-その他のAPIについては、LINE WORKS Developersの公式ドキュメントをご覧ください。<br>
-
-- [LINE WORKS Official Documentation](https://developers.worksmobile.com/document)
-
-
-# 貢献
-もし、本プロジェクトの開発と保守を支援してくださる方がいれば大歓迎です。
-貢献頂く際は、以下の手順でお願い致します。
-
-1. 独立した機能毎に新しいフォーク（https://github.com/0yan/lineworks）を開始してください。
-2. 単体テストの追加をお願い致します。
+トークBotを使ったアプリケーション作成の効率化のために開始しました。
 
 
 # インストール
-pipを使用してlineworksをインストールします。<br>
+pipを使用してlineworksをインストールします。
+
 `pip install lineworks`
 
 ### 依存関係
-[cryptography](https://pypi.org/project/cryptography/)、[PyJWT](https://pypi.org/project/PyJWT/)及び[requests](https://pypi.org/project/requests/)に依存しています。<br>
+[cryptography](https://pypi.org/project/cryptography/)、[PyJWT](https://pypi.org/project/PyJWT/)及び[requests](https://pypi.org/project/requests/)に依存しています。
 サーバーAPIを呼び出す際にはアクセストークンが必要です。
-アクセストークンを取得する際にはJWTを生成/電子署名を行いますが、そのJWT生成/電子署名にPyJWTを使用します。<br>
+アクセストークンを取得する際にはJWTを生成/電子署名を行いますが、そのJWT生成/電子署名にPyJWTを使用します。
 cryptographyは、PyJWTが電子署名アルゴリズムRS256を使用するのに必要です。
-詳細はPyJWTの[documentation](https://pyjwt.readthedocs.io/en/latest/installation.html)をご覧ください。<br>
-言うまでもないと思いますが、requestsはAPIの呼び出しに使用します。
+詳細はPyJWTの[documentation](https://pyjwt.readthedocs.io/en/latest/installation.html)をご覧ください。
 
 
 # クイックスタート
-本ライブラリの使用例をご紹介致します。<br>
-なお、本ライブラリの使用にはLINE WORKS API情報が必要です。使用前に、[LINE WORKS Developer Console](https://developers.worksmobile.com/jp/console/openapi/main)で発行してください。<br>
+本ライブラリの使用例をご紹介致します。
+なお、本ライブラリの使用にはLINE WORKS API情報が必要です。使用前に、[LINE WORKS Developer Console](https://developers.worksmobile.com/jp/console/openapi/main)で発行してください。
 
 ## `TalkBotApi`クラスのインスタンスを生成する
 `TalkBotApi`クラスは、アクセストークン取得メソッド`get_access_token()`とサーバーAPI呼び出しメソッド`call_server_api()`を持つ`ServerApi`クラスの子クラスです。
-トークBot APIを呼び出すために、`TalkBotApi`クラスのインスタンスを生成します。<br>
+トークBot APIを呼び出すために、`TalkBotApi`クラスのインスタンスを生成します。
 なお、Developer Consoleで登録したBotを利用する場合、キーワード引数`bot_no`に当該BotのBot No.を渡します。
 
 ```
@@ -66,7 +42,7 @@ cryptographyは、PyJWTが電子署名アルゴリズムRS256を使用するの�
 
 ## `TalkBotApi`クラスのメソッドを使用する
 `TalkBotApi`クラスのメソッドは、①登録済みBotを使用するものと②それ以外に大別されます。
-前者を使用する場合は必ず、`TalkBotApi`クラスのインスタンス生成時、キーワード引数`bot_no`に使用するBotのBot No.を渡してください。<br>
+前者を使用する場合は必ず、`TalkBotApi`クラスのインスタンス生成時、キーワード引数`bot_no`に使用するBotのBot No.を渡してください。
 使用方法は以下のとおりです（使用方法の詳細は各メソッドのdocstringをご覧ください）。
 
 ### ①登録済みのBotを使用するもの
@@ -134,7 +110,3 @@ talk_bot.register_bot(name="テストBot", photo_url="https://www.example.com/~.
 # トークBotリスト照会
 talk_bot.query_bot_list()
 ```
-
-これでクイックスタートは終了です。<br>
-その他のクラスのドキュメントは今後充実させていきますが、それまではdocstringをご覧頂けますと幸いです。<br>
-何卒宜しくお願い致します。
